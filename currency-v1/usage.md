@@ -1,8 +1,5 @@
 # Usage
 
-This document assumes you have followed the [setup](setup.md) procedures and
-have a running Jenkins instance using Docker.
-
 ## Feature development
 
 1.  Create a feature branch called `feature/1` from `master` branch
