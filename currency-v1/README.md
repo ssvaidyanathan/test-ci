@@ -9,3 +9,6 @@ Install Maven and run the following command from the currency-v1 directory
 For example
 
 `mvn clean install -Ptest -DAPIGEE_ORG=testORg -DAPIGEE_USERNAME=test@example.com -DAPIGEE_PASSWORD=Iamasecret -DAPI_DOMAIN_TEST=testORg-test.apigee.net`
+
+
+For more info - checkout the [usage](./usage.md) instructions
