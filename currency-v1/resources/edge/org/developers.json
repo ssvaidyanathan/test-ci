@@ -1,9 +1,9 @@
 [
     {
         "attributes": [],
-        "email": "hugh@example.com",
-        "firstName": "Hugh",
-        "lastName": "Jack",
-        "userName": "hughexample"
+        "email": "test@api.com",
+        "firstName": "Test",
+        "lastName": "Currency",
+        "userName": "testcurrency"
     }
 ]
