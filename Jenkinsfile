@@ -28,7 +28,7 @@ pipeline {
 
         stage('cucumber report') {
           steps {
-              cucumberReportPublisher(target: [
+              step($class: CucumberReportPublisher([
                       fileExcludePattern: '',
                       fileIncludePattern: '**/reports.json',
                       ignoreFailedTests: false, jenkinsBasePath: '',
@@ -38,7 +38,9 @@ pipeline {
                       pendingFails: false,
                       skippedFails: false,
                       undefinedFails: false
-                ])
+                        ]
+                    )
+              )
             }
         }
     }
