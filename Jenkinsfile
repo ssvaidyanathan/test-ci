@@ -25,5 +25,19 @@ pipeline {
             publishHTML(target: [allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'currency-v1/target/coverage/lcov-report', reportFiles: 'index.html', reportName: 'HTML Report'])
           }
         }
+
+        stage('cucumber report') {
+          steps {
+            CucumberReportPublisher(target: [fileExcludePattern: '',
+            fileIncludePattern: '**/target/reports.json',
+            ignoreFailedTests: false, jenkinsBasePath: '',
+            jsonReportDirectory: 'target/reports',
+            missingFails: false,
+            parallelTesting: false,
+            pendingFails: false,
+            skippedFails: false,
+            undefinedFails: false])
+            }
+        }
     }
 }
