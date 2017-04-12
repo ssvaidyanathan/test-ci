@@ -28,7 +28,19 @@ pipeline {
 
         stage('cucumber report') {
             steps {
-                step([$class: 'CucumberReportPublisher', fileExcludePattern: '', fileIncludePattern: '**/reports.json', ignoreFailedTests: false, jenkinsBasePath: '', jsonReportDirectory: "${project_dir}/target/reports", missingFails: false, parallelTesting: false, pendingFails: false, skippedFails: false, undefinedFails: false])
+                step([
+                    $class: 'CucumberReportPublisher',
+                    fileExcludePattern: '',
+                    fileIncludePattern: "${project_dir}/target/reports.json",
+                    ignoreFailedTests: false,
+                    jenkinsBasePath: '',
+                    jsonReportDirectory: "${project_dir}/target/reports",
+                    missingFails: false,
+                    parallelTesting: false,
+                    pendingFails: false,
+                    skippedFails: false,
+                    undefinedFails: false
+                    ])
             }
         }
     }
