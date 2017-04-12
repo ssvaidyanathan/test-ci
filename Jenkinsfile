@@ -20,5 +20,10 @@ pipeline {
             sh "mvn -f ${project_dir}/pom.xml install -P${params.PROFILE} -Denv.APIGEE_ORG=${params.APIGEE_ORG} -Denv.APIGEE_USERNAME=${params.APIGEE_USERNAME} -Denv.APIGEE_PASSWORD=${params.APIGEE_PASSWORD} -Denv.API_DOMAIN_TEST=${params.API_DOMAIN_TEST} -Ddeployment.suffix=${params.DEPLOYMENT_SUFFIX}"
           }
         }
+        stage('coverage report') {
+          steps {
+            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'currency-v1/target/coverage/lcov-report', reportFiles: 'index.html', reportName: 'HTML Report'])
+          }
+        }
     }
 }
