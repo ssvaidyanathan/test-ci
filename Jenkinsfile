@@ -31,10 +31,10 @@ pipeline {
                 step([
                     $class: 'CucumberReportPublisher',
                     fileExcludePattern: '',
-                    fileIncludePattern: "${project_dir}/target/reports.json",
+                    fileIncludePattern: "**/*.json",
                     ignoreFailedTests: false,
                     jenkinsBasePath: '',
-                    jsonReportDirectory: "${project_dir}/target/reports",
+                    jsonReportDirectory: "${project_dir}/target/reports.json",
                     missingFails: false,
                     parallelTesting: false,
                     pendingFails: false,
