@@ -1,5 +1,5 @@
 #!groovy
-def project_dir = 'current-v1'
+def project_dir = 'currency-v1'
 pipeline {
     agent any
 
