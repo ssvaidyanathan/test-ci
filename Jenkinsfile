@@ -1,5 +1,5 @@
 #!groovy
-def project_dir = 'currency-v1'
+
 pipeline {
     agent any
 
@@ -8,25 +8,64 @@ pipeline {
           steps {
                 sh 'mvn --version'
                 sh 'npm --version'
+                sh 'node --version'
                  }
         }
-        stage('clean') {
+        stage('Clean') {
             steps {
-                sh "mvn -f ${project_dir}/pom.xml clean"
+                sh "mvn clean"
            }
         }
-        stage('install') {
+        stage('Static Code Analysis, Unit Test and Coverage') {
+            steps {
+              sh "mvn test -P${params.profile} -Ddeployment.suffix=${params.deployment_suffix} -Dorg=${params.org} -Dusername=${params.username} -Dpassword=${params.password} -Dapigee.config.dir=target/resources/edge -Dapigee.config.options=create -Dapigee.config.exportDir=./target/test/integration"
+            }
+        }
+        stage('Pre-Deployment Configurations') {
           steps {
-            sh "mvn -f ${project_dir}/pom.xml install -P${params.PROFILE} -Denv.APIGEE_ORG=${params.APIGEE_ORG} -Denv.APIGEE_USERNAME=${params.APIGEE_USERNAME} -Denv.APIGEE_PASSWORD=${params.APIGEE_PASSWORD} -Denv.API_DOMAIN_TEST=${params.API_DOMAIN_TEST} -Ddeployment.suffix=${params.DEPLOYMENT_SUFFIX}"
+            sh "mvn apigee-config:caches apigee-config:keyvaluemaps apigee-config:targetservers -P${params.profile} -Dorg=${params.org} -Dusername=${params.username} -Dpassword=${params.password} -Dapigee.config.dir=target/resources/edge -Dapigee.config.options=create"
           }
         }
-        stage('coverage report') {
+        stage('Build proxy bundle') {
           steps {
-            publishHTML(target: [allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'currency-v1/target/coverage/lcov-report', reportFiles: 'index.html', reportName: 'HTML Report'])
+            sh "mvn apigee-enterprise:configure -P${params.profile} -Ddeployment.suffix=${params.deployment_suffix} -Dorg=${params.org} -Dusername=${params.username} -Dpassword=${params.password}"
           }
         }
-
-        stage('cucumber report') {
+        stage('Deploy proxy bundle') {
+          steps {
+            sh "mvn apigee-enterprise:deploy -P${params.profile} -Ddeployment.suffix=${params.deployment_suffix} -Dorg=${params.org} -Dusername=${params.username} -Dpassword=${params.password}"
+          }
+        }
+        stage('Post-Deployment Configurations') {
+          steps {
+            sh "mvn apigee-config:apiproducts apigee-config:developers apigee-config:apps -P${params.profile} -Dorg=${params.org} -Dusername=${params.username} -Dpassword=${params.password} -Dapigee.config.dir=target/resources/edge -Dapigee.config.options=create"
+          }
+        }
+        stage('Export Dev App Keys') {
+          steps {
+            sh "mvn apigee-config:exportAppKeys -P${params.profile} -Dorg=${params.org} -Dusername=${params.username} -Dpassword=${params.password} -Dapigee.config.dir=target/resources/edge -Dapigee.config.exportDir=./target/test/integration"
+          }
+        }
+        stage('Functional Test') {
+          steps {
+            sh "node ./node_modules/cucumber/bin/cucumber.js target/test/integration/features --format json:target/reports.json"
+            //sh "mvn exec:exec@integration"
+          }
+        }
+        stage('Coverage Test Report') {
+          steps {
+            publishHTML(target: [
+                                  allowMissing: false,
+                                  alwaysLinkToLastBuild: false,
+                                  keepAll: false,
+                                  reportDir: "target/coverage/lcov-report",
+                                  reportFiles: 'index.html',
+                                  reportName: 'HTML Report'
+                                ]
+                        )
+          }
+        }
+        stage('Functional Test Report') {
             steps {
                 step([
                     $class: 'CucumberReportPublisher',
@@ -34,7 +73,7 @@ pipeline {
                     fileIncludePattern: "**/reports.json",
                     ignoreFailedTests: false,
                     jenkinsBasePath: '',
-                    jsonReportDirectory: "${project_dir}/target",
+                    jsonReportDirectory: "target",
                     missingFails: false,
                     parallelTesting: false,
                     pendingFails: false,
