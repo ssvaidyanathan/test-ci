@@ -12,3 +12,6 @@ For example
 
 
 For more info - checkout the [usage](./usage.md) instructions
+
+If you use Jenkins 2.0, you can use the pipeline plugin which will look like this
+![](./Jenkins-pipeline.png)
