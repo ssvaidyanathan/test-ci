@@ -1,4 +1,24 @@
-tings.xml`:
+# Usage
+
+## Feature development
+
+1.  Create a feature branch called `feature/1` from `master` branch
+
+    ```bash
+    (master): git checkout -b feature/1
+    ```
+
+2.  Open any file, e.g. README.md, and make a change
+
+3.  Deploy and test your changes
+
+    ```bash
+    cd currency-v1
+    mvn install -Ptest -P${profile} -Dorg=${org} -Dusername=${username} -Dpassword=\"${password}\" -Dapigee.config.dir=target/resources/edge -Dapigee.config.options=create
+    ```
+
+    If you don't want to pass that many arguments to maven, you can add those
+    properties to your settings file `~/.m2/settings.xml`:
 
     ```xml
     <profile>
