@@ -43,7 +43,7 @@
       <id>dev</id>
       <properties>
         <apigee.profile>dev</apigee.profile>
-        <apigee.env>dev</apigee.env>
+        <apigee.env>${env}</apigee.env>
         <apigee.hosturl>https://api.enterprise.apigee.com</apigee.hosturl>
         <apigee.apiversion>v1</apigee.apiversion>
         <apigee.org>${org}</apigee.org>
@@ -58,7 +58,7 @@
       <id>local</id>
       <properties>
         <apigee.profile>test</apigee.profile>
-        <apigee.env>test</apigee.env>
+        <apigee.env>${env}</apigee.env>
         <apigee.hosturl>https://api.enterprise.apigee.com</apigee.hosturl>
         <apigee.apiversion>v1</apigee.apiversion>
         <apigee.org>${org}</apigee.org>
@@ -73,7 +73,7 @@
       <id>test</id>
       <properties>
         <apigee.profile>test</apigee.profile>
-        <apigee.env>test</apigee.env>
+        <apigee.env>${env}</apigee.env>
         <apigee.hosturl>https://api.enterprise.apigee.com</apigee.hosturl>
         <apigee.apiversion>v1</apigee.apiversion>
         <apigee.org>${org}</apigee.org>
@@ -88,7 +88,7 @@
       <id>prod</id>
       <properties>
         <apigee.profile>prod</apigee.profile>
-        <apigee.env>prod</apigee.env>
+        <apigee.env>${env}</apigee.env>
         <apigee.hosturl>https://api.enterprise.apigee.com</apigee.hosturl>
         <apigee.apiversion>v1</apigee.apiversion>
         <apigee.org>${org}</apigee.org>
@@ -195,6 +195,7 @@
             <include>test/integration/test-config.json</include>
             <include>apiproxy/currency-v1.xml</include>
             <include>resources/edge/org/apiProducts.json</include>
+            <include>resources/edge/org/developerApps.json</include>
           </includes>
           <replacements>
             <replacement>
@@ -206,8 +207,20 @@
               <value>${api.northbound.domain}</value>
             </replacement>
             <replacement>
+              <token>CurrencyProduct</token>
+              <value>CurrencyProduct${deployment.suffix}</value>
+            </replacement>
+            <replacement>
+              <token>CurrencyApp</token>
+              <value>CurrencyApp${deployment.suffix}</value>
+            </replacement>
+            <replacement>
               <token>currency-v1</token>
               <value>currency-${deployment.suffix}v1</value>
+            </replacement>
+            <replacement>
+              <token>edge_env</token>
+              <value>${env}</value>
             </replacement>
             <replacement>
               <token>@description</token>
