@@ -1,35 +1,19 @@
-# Usage
-
-## Feature development
-
-1.  Create a feature branch called `feature/1` from `master` branch
-
-    ```bash
-    (master): git checkout -b feature/1
-    ```
-
-2.  Open any file, e.g. README.md, and make a change
-
-3.  Deploy and test your changes
-
-    ```bash
-    cd currency-v1
-    mvn install -Ptest -Denv.APIGEE_ORG={ORG} -Denv.APIGEE_USERNAME={username} -Denv.APIGEE_PASSWORD={password} -Denv.API_DOMAIN_TEST={apigee_proxy_domain}
-    ```
-
-    If you don't want to pass that many arguments to maven, you can add those
-    properties to your settings file `~/.m2/settings.xml`:
+tings.xml`:
 
     ```xml
     <profile>
-        <id>test</id>
-        <properties>
-            <!-- these settings are for accelerator-ci-maven -->
-            <env.APIGEE_ORG>...</env.APIGEE_ORG>
-            <env.APIGEE_USERNAME>...</env.APIGEE_USERNAME>
-            <env.APIGEE_PASSWORD>...</env.APIGEE_PASSWORD>
-            <env.API_DOMAIN_TEST>...</env.API_DOMAIN_TEST>
-        </properties>
+      <id>dev</id>
+      <properties>
+        <apigee.profile>dev</apigee.profile>
+        <apigee.env>dev</apigee.env>
+        <apigee.hosturl>...</apigee.hosturl>
+        <apigee.apiversion>v1</apigee.apiversion>
+        <apigee.org>${org}</apigee.org>
+        <apigee.username>${username}</apigee.username>
+        <apigee.password>${password}</apigee.password>
+        <apigee.options>update</apigee.options>
+        <api.northbound.domain>...</api.northbound.domain>
+      </properties>
     </profile>
     ```
 
