@@ -14,7 +14,6 @@ module.exports = function() {
     });*/
 
     this.registerHandler("BeforeFeatures", function(event, next) {
-    	console.log('before!');
       	return next();
   	});
 
@@ -32,7 +31,6 @@ module.exports = function() {
     });*/
 
     this.registerHandler("AfterFeatures", function(event, next) {
-    	console.log('after!');
       	return next();
   	});
 };
