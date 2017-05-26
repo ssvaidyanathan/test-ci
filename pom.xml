@@ -324,7 +324,7 @@
             <configuration>
               <executable>node</executable>
               <commandlineArgs>
-                node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha test/unit
+                node_modules/istanbul/lib/cli.js cover --dir target/unit-test-coverage node_modules/mocha/bin/_mocha test/unit 
               </commandlineArgs>
             </configuration>
           </execution>
