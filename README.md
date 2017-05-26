@@ -45,7 +45,7 @@ following invocation (line continuation is used to format the command):
     -Dorg={org} \
     -Dusername={username} \
     -Dpassword={password} \
-    -Dapigee-config.dir=target/resources/edge \
+    -Dapigee.config.dir=target/resources/edge \
     -Dapigee.config.options=create \
     -Dapigee.config.exportDir=./target/test/integration
 
@@ -67,6 +67,6 @@ as follows:
     -Dorg={org} \
     -Dusername={username} \
     -Dpassword={password} \
-    -Dapigee-config.dir=target/resources/edge \
+    -Dapigee.config.dir=target/resources/edge \
     -Dapigee.config.exportDir=./target/test/integration
 
