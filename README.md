@@ -43,6 +43,7 @@ following invocation (line continuation is used to format the command):
     mvn clean install \
     -P{profile} \
     -Dorg={org} \
+    -env={env} \
     -Dusername={username} \
     -Dpassword={password} \
     -Dapigee.config.dir=target/resources/edge \
@@ -65,6 +66,7 @@ as follows:
     mvn apigee-config:exportAppKeys \
     -P{profile} \
     -Dorg={org} \
+    -env={env} \
     -Dusername={username} \
     -Dpassword={password} \
     -Dapigee.config.dir=target/resources/edge \

@@ -14,7 +14,7 @@
 
     ```bash
     cd currency-v1
-    mvn install -Ptest -P${profile} -Dorg=${org} -Dusername=${username} -Dpassword=\"${password}\" -Dapigee.config.dir=target/resources/edge -Dapigee.config.options=create
+    mvn install -Ptest -P${profile} -Dorg=${org} -Denv=${env} -Dusername=${username} -Dpassword=\"${password}\" -Dapigee.config.dir=target/resources/edge -Dapigee.config.options=create
     ```
 
     If you don't want to pass that many arguments to maven, you can add those
@@ -25,7 +25,7 @@
       <id>dev</id>
       <properties>
         <apigee.profile>dev</apigee.profile>
-        <apigee.env>dev</apigee.env>
+        <apigee.env>${env}</apigee.env>
         <apigee.hosturl>...</apigee.hosturl>
         <apigee.apiversion>v1</apigee.apiversion>
         <apigee.org>${org}</apigee.org>
