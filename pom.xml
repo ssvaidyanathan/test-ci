@@ -32,6 +32,7 @@
     <project.root.dir>${basedir}</project.root.dir>
     <target.root.dir>${basedir}/target</target.root.dir>
     <deployment.suffix>${user.name}</deployment.suffix>
+    <deployment.env>-${env}</deployment.env>
     <commit></commit>
     <branch>a local</branch>
   </properties>
@@ -208,11 +209,11 @@
             </replacement>
             <replacement>
               <token>CurrencyProduct</token>
-              <value>CurrencyProduct${deployment.suffix}</value>
+              <value>CurrencyProduct${deployment.suffix}${deployment.env}</value>
             </replacement>
             <replacement>
               <token>CurrencyApp</token>
-              <value>CurrencyApp${deployment.suffix}</value>
+              <value>CurrencyApp${deployment.suffix}${deployment.env}</value>
             </replacement>
             <replacement>
               <token>currency-v1</token>
