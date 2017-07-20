@@ -3,7 +3,7 @@ var https = require("https");
 var fs = require("fs");
 
 //Call Mgmt API
-function mgmtAPI(host, port, path, username, password, methodType, contentType){
+function mgmtAPI(host, port, path, username, password, methodType){
   return new Promise(function (fulfill, reject){
 	var data = "";
 	var auth = Buffer.from(username+":"+password).toString('base64');
@@ -13,7 +13,7 @@ function mgmtAPI(host, port, path, username, password, methodType, contentType){
       path: path,
       method: methodType,
       headers: {
-          "Content-Type": contentType,
+          "Content-Type": "application/json",
           "Authorization": "Basic "+auth
       }
     };
@@ -50,7 +50,7 @@ function mgmtAPI(host, port, path, username, password, methodType, contentType){
 }
 
 function getMgmtAPI(host, port, path, username, password){
-  return mgmtAPI(host, port, path, username, password, "GET", "application/json");
+  return mgmtAPI(host, port, path, username, password, "GET");
 }
 
 
