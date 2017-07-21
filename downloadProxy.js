@@ -9,10 +9,10 @@ else
 var fs = require("fs");
 
 //Call Mgmt API
-function mgmtAPI(host, port, path, username, password, methodType){
+function mgmtAPI(host, port, path, auth, methodType){
   return new Promise(function (fulfill, reject){
   var data = "";
-  var auth = Buffer.from(username+":"+password).toString('base64');
+  //var auth = Buffer.from(username+":"+password).toString('base64');
     var options = {
       host: host,
       port: port,
@@ -38,7 +38,7 @@ function mgmtAPI(host, port, path, username, password, methodType){
           data += d;
       });
       res.on("end", function(){
-        if(data!= "" && options.headers['Content-Type']==='application/json'){
+        if(data!= "" && options.headers["Content-Type"]==="application/json"){
           fulfill(JSON.parse(data));
         }
         else {
@@ -55,12 +55,12 @@ function mgmtAPI(host, port, path, username, password, methodType){
   });
 }
 
-function getMgmtAPI(host, port, path, username, password){
-  return mgmtAPI(host, port, path, username, password, "GET");
+function getMgmtAPI(host, port, path, auth){
+  return mgmtAPI(host, port, path, auth, "GET");
 }
 
-function getDeployedRevisionForAPI(host, port, org, env, username, password, api){
-  return getMgmtAPI(host, port, "/v1/o/"+org+"/e/"+env+"/apis/"+api+"/deployments", username, password)
+function getDeployedRevisionForAPI(host, port, org, env, auth, api){
+  return getMgmtAPI(host, port, "/v1/o/"+org+"/e/"+env+"/apis/"+api+"/deployments", auth)
     .then(function(response){
       var revision;
       if(response!=null && response.revision!=null && response.revision.length>0){
@@ -74,14 +74,20 @@ function getDeployedRevisionForAPI(host, port, org, env, username, password, api
   });
 }
 
-var exportBundle = function(proto, host, port, org, env, username, password, api){
-  getDeployedRevisionForAPI(host, port, org, env, username, password, api)
+var exportBundle = function(proto, host, port, org, env, auth, api){
+  getDeployedRevisionForAPI(host, port, org, env, auth, api)
     .then(function(revNumber){
       console.log("Revision Number is : "+ revNumber);
       var uri = proto+"://"+host+":"+port+"/v1/o/"+org+"/apis/"+api+"/revisions/"+revNumber+"?format=bundle";
-      request.get(uri)
-        .auth(username, password, false)
-        .pipe(fs.createWriteStream(api+'.zip'));
+      var options = {
+        url: uri,
+        headers: {
+          "Authorization": "Basic "+ auth
+        }
+      }
+      request.get(options)
+        //.auth(username, password, false)
+        .pipe(fs.createWriteStream(api+".zip"));
       console.log("Export complete !!!")
     })
     .catch(function(e){
@@ -92,9 +98,9 @@ var exportBundle = function(proto, host, port, org, env, username, password, api
 
 exportBundle(myArgs[0], myArgs[1], myArgs[2], 
         myArgs[3], myArgs[4], 
-        myArgs[5], myArgs[6], 
-        myArgs[7]);
+        myArgs[5], 
+        myArgs[6]);
 
 //TO run
-//node downloadProxy.js protocol host port org env user pwd api
+//node downloadProxy.js protocol host port org env auth api
 
