@@ -28,6 +28,7 @@ function mgmtAPI(host, port, path, auth, methodType){
         var maskedOptions = options;
         maskedOptions.headers.Authorization = "***";
         console.error(res.statusCode + ": " + res.statusMessage + " with " + JSON.stringify(maskedOptions));
+        //throw new Error(res.statusCode + ": " + res.statusMessage + " with " + JSON.stringify(maskedOptions));
       }
       if (res.statusCode >= 500) {
         var maskedOptions = options;
@@ -62,7 +63,8 @@ function getMgmtAPI(host, port, path, auth){
 function getDeployedRevisionForAPI(host, port, org, env, auth, api){
   return getMgmtAPI(host, port, "/v1/o/"+org+"/e/"+env+"/apis/"+api+"/deployments", auth)
     .then(function(response){
-      var revision;
+      //console.log(JSON.stringify(response));
+      var revision=-1;
       if(response!=null && response.revision!=null && response.revision.length>0){
         revision = response.revision[0].name;
       }
@@ -77,6 +79,10 @@ function getDeployedRevisionForAPI(host, port, org, env, auth, api){
 var exportBundle = function(proto, host, port, org, env, auth, api){
   getDeployedRevisionForAPI(host, port, org, env, auth, api)
     .then(function(revNumber){
+      if(revNumber === -1){
+        console.error("Error has occured");
+        return null;
+      }
       console.log("Revision Number is : "+ revNumber);
       var uri = proto+"://"+host+":"+port+"/v1/o/"+org+"/apis/"+api+"/revisions/"+revNumber+"?format=bundle";
       var options = {
@@ -86,7 +92,10 @@ var exportBundle = function(proto, host, port, org, env, auth, api){
         }
       }
       request.get(options)
-        //.auth(username, password, false)
+        //If you want response, uncomment below code
+        //.on('response', function(response) {
+          //console.log(JSON.stringify(response)); 
+        //})
         .pipe(fs.createWriteStream(api+".zip"));
       console.log("Export complete !!!")
     })
