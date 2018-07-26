@@ -28,12 +28,13 @@ function mgmtAPI(host, port, path, auth, methodType){
         var maskedOptions = options;
         maskedOptions.headers.Authorization = "***";
         console.error(res.statusCode + ": " + res.statusMessage + " with " + JSON.stringify(maskedOptions));
-        //throw new Error(res.statusCode + ": " + res.statusMessage + " with " + JSON.stringify(maskedOptions));
+        throw new Error(res.statusCode + ": " + res.statusMessage + " with " + JSON.stringify(maskedOptions));
       }
       if (res.statusCode >= 500) {
         var maskedOptions = options;
         maskedOptions.headers.Authorization = "***";
         console.error(res.statusCode + ": " + res.statusMessage + " with " + JSON.stringify(maskedOptions));
+        throw new Error(res.statusCode + ": " + res.statusMessage + " with " + JSON.stringify(maskedOptions));
       }
       res.on("data", function(d) {
           data += d;
@@ -60,11 +61,10 @@ function getMgmtAPI(host, port, path, auth){
   return mgmtAPI(host, port, path, auth, "GET");
 }
 
-function getDeployedRevisionForAPI(host, port, org, env, auth, api){
-  return getMgmtAPI(host, port, "/v1/o/"+org+"/e/"+env+"/apis/"+api+"/deployments", auth)
+function getDeployedRevisionForType(host, port, org, env, auth, name, type_folder){
+  return getMgmtAPI(host, port, "/v1/o/"+org+"/e/"+env+"/"+type_folder + "/"+name+"/deployments", auth)
     .then(function(response){
-      //console.log(JSON.stringify(response));
-      var revision=-1;
+      var revision;
       if(response!=null && response.revision!=null && response.revision.length>0){
         revision = response.revision[0].name;
       }
@@ -76,31 +76,36 @@ function getDeployedRevisionForAPI(host, port, org, env, auth, api){
   });
 }
 
-var exportBundle = function(proto, host, port, org, env, auth, api){
-  getDeployedRevisionForAPI(host, port, org, env, auth, api)
+var exportBundle = function(proto, host, port, org, env, auth, name, type_folder){
+  getDeployedRevisionForType(host, port, org, env, auth, name, type_folder)
     .then(function(revNumber){
-      if(revNumber === -1){
-        console.error("Error has occured");
-        return null;
-      }
-      console.log("Revision Number is : "+ revNumber);
-      var uri = proto+"://"+host+":"+port+"/v1/o/"+org+"/apis/"+api+"/revisions/"+revNumber+"?format=bundle";
+      console.log(" ");
+      console.log("Revision number is : "+ revNumber);
+      //var uri = proto+"://"+host+":"+port+"/v1/o/"+org+"/"+type_folder+"/"+name+"/revisions/"+revNumber+"?format=bundle";
+      var uri = proto+"://"+host+"/v1/o/"+org+"/"+type_folder+"/"+name+"/revisions/"+revNumber+"?format=bundle";
+      console.log("URI is : "+ uri);
       var options = {
         url: uri,
         headers: {
           "Authorization": "Basic "+ auth
         }
       }
+      console.log("Options are : "+ JSON.stringify(options));
       request.get(options)
-        //If you want response, uncomment below code
-        //.on('response', function(response) {
-          //console.log(JSON.stringify(response)); 
-        //})
-        .pipe(fs.createWriteStream(api+".zip"));
-      console.log("Export complete !!!")
+        //.auth(username, password, false)
+        .on('error', function(err) {
+          console.log(err)
+        })
+        .on('response', function(response) {
+          console.log("Response code is : "+ response.statusCode);  // 200 
+          console.log("Response : "+ JSON.stringify(response));
+        })
+        .pipe(fs.createWriteStream(name+".zip"));
+      console.log("Export successfully completed!")
+      console.log(" ");
     })
     .catch(function(e){
-        console.error("Not a valid API Proxy Name or the Proxy is not deployed"+e);
+        console.error(name + "is not a valid Name for " + type_folder + " or " + name + " is not deployed"+e);
         return null;
       });
 };
@@ -108,7 +113,8 @@ var exportBundle = function(proto, host, port, org, env, auth, api){
 exportBundle(myArgs[0], myArgs[1], myArgs[2], 
         myArgs[3], myArgs[4], 
         myArgs[5], 
-        myArgs[6]);
+        myArgs[6],
+        myArgs[7]);
 
 //TO run
 //node downloadProxy.js protocol host port org env auth api
