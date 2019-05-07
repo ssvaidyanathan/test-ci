@@ -82,6 +82,9 @@
         <apigee.password>${password}</apigee.password>
         <apigee.options>update</apigee.options>
         <api.northbound.domain>${org}-test.apigee.net</api.northbound.domain>
+        <apigee.config.options>update</apigee.config.options>
+        <apigee.config.dir>./target/resources/edge</apigee.config.dir>
+        <apigee.config.exportDir>./target/test/integration</apigee.config.exportDir>
         <api.testtag>~@wip</api.testtag>
       </properties>
     </profile>
